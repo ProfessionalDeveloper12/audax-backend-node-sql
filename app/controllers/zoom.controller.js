@@ -14,6 +14,10 @@ exports.zoomLogin = (req, res) => {
       console.log(`access_token: ${body.access_token}`);
       console.log(`refresh_token: ${body.refresh_token}`);
 
+      if (error) {
+        res.status(500).send({error: true, errorObj: error})
+      }
+
       res.status(200).send({error: false, zoomAccessToken: body.access_token, zoomRefreshToken: body.refresh_token})
 
       return
