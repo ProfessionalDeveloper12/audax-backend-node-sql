@@ -50,7 +50,8 @@ exports.zoomLogin = (req, res) => {
             }, function (er, re, body3) {
               const zoomMeetings = JSON.parse(body3);
               if (er) {
-                return res.status(500).send({ error: true, errorObj: er });
+                res.status(500).send({ error: true, errorObj: er });
+                return 
               } else {
                 res.status(200).send({
                   error: false,
