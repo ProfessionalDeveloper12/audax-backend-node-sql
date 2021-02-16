@@ -29,7 +29,7 @@ db.sequelize.sync();
 
 // simple route
 app.get("/", (req, res) => {
-  res.json({ message: "Welcome to Audax admin." });
+  res.send("Welcome to Audax admin.");
 });
 
 // routes
