@@ -15,10 +15,10 @@ exports.zoomLogin = (req, res) => {
       console.log(`refresh_token: ${body.refresh_token}`);
 
       if (error) {
-        res.status(500).send({error: true, errorObj: error})
+        res.status(500).send({ error: true, errorObj: error })
       }
 
-      res.status(200).send({error: false, zoomAccessToken: body.access_token, zoomRefreshToken: body.refresh_token})
+      res.status(200).send({ error: false, zoomAccessToken: body.access_token, zoomRefreshToken: body.refresh_token })
 
       return
 
@@ -76,5 +76,41 @@ exports.zoomLogin = (req, res) => {
     // If no authorization code is available, redirect to Zoom OAuth to authorize
     res.redirect('https://zoom.us/oauth/authorize?response_type=code&client_id=' + zoomConfig.ZOOM_CLIENT_ID + '&redirect_uri=' + zoomConfig.REDIRECT_URL)
   }
+};
+
+exports.getUserInfo = (req, res) => {
+  const zoomAccessToken = req.body.zoomAccessToken;
+
+  request.get('https://api.zoom.us/v2/users/me', (error, response, body) => {
+    if (error) {
+      console.log('API Response Error: ', error)
+      res.status(500).send({ error: true, errorObj: error })
+    } else {
+      // body = JSON.parse(body);
+      res.status(200).send({ error: false, zoomUser: body })
+    }
+  }).auth(null, null, true, zoomAccessToken);
+}
+
+exports.getUserMeetings = (req, res) => {
+  const userId = req.body.userId;
+  const zoomAccessToken = req.body.zoomAccessToken;
+
+  const url = `https://api.zoom.us/v2/users/${userId}/meetings`;
+
+  request({
+    headers: {
+      'Authorization': 'Bearer ' + zoomAccessToken,
+      'Content-Type': 'application/json'
+    },
+    uri: url,
+    method: 'GET'
+  }, function (err, response, body) {
+    if (err) {
+      return res.status(500).send({ error: true, errorObj: err });
+    } else {
+      res.status(200).send(body);
+    }
+  })
 };
 
