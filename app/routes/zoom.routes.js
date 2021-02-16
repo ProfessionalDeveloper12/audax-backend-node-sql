@@ -17,7 +17,6 @@ module.exports = function(app) {
 
   app.post(
     "/api/zoom/get_token",
-    [authJwt.verifyToken],
     controller.zoomLogin
   )
 };
