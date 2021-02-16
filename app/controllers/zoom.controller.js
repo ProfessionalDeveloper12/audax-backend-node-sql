@@ -92,8 +92,9 @@ exports.getUserInfo = (req, res) => {
   }, function (err, response, body) {
     if (err) {
       res.status(500).send({error: true, errorObj: err})
+    } else {
+      res.status(200).send({zoomUser: JSON.parse(body), error: false});
     }
-    res.status(200).send({zoomUser: JSON.parse(body), error: false});
   });
 }
 
