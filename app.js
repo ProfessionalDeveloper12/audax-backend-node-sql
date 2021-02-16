@@ -1,6 +1,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
+require('dotenv').config();
 
 const app = express();
 
@@ -29,8 +30,9 @@ db.sequelize.sync();
 
 // simple route
 app.get("/", (req, res) => {
-  res.send("Welcome to Audax!.");
+  res.send("Welcome to Audax  !.(" + process.env.NODE_ENV + ")");
 });
+console.log(process.env.NODE_ENV)
 
 // routes
 require('./app/routes/auth.routes')(app);
@@ -39,6 +41,7 @@ require('./app/routes/zoom.routes')(app);
 
 // set port, listen for requests
 const PORT = process.env.PORT || 4000;
+
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`);
 });
