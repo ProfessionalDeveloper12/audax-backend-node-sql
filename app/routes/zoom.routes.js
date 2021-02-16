@@ -21,7 +21,7 @@ module.exports = function(app) {
   );
 
   app.post(
-    "/api/zoom/get_zoomuser",
+    "/api/zoom/get_zoom_user",
     authJwt.verifyToken,
     controller.getUserInfo
   );
