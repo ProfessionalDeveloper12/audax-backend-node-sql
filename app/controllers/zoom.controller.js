@@ -1,8 +1,8 @@
 const zoomConfig = require('../config/zoom.config');
 
 exports.zoomLogin = (req, res) => {
-  if (req.query.code) {
-    let url = 'https://zoom.us/oauth/token?grant_type=authorization_code&code=' + req.query.code + '&redirect_uri=' + zoomConfig.REDIRECT_URL;
+  if (req.body.code) {
+    let url = 'https://zoom.us/oauth/token?grant_type=authorization_code&code=' + req.body.code + '&redirect_uri=' + zoomConfig.REDIRECT_URL;
 
     request.post(url, (error, response, body) => {
 
@@ -12,6 +12,8 @@ exports.zoomLogin = (req, res) => {
       // Logs your access and refresh tokens in the browser
       console.log(`access_token: ${body.access_token}`);
       console.log(`refresh_token: ${body.refresh_token}`);
+
+      res.json({error: false, zoomAccessToken: body.access_token, zoomRefreshToken: body.refresh_token})
 
       if (body.access_token) {
 
