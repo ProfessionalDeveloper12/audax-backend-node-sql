@@ -4,7 +4,8 @@
   "description": "Node.js Demo for JWT Authentication",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon app.js"
   },
   "keywords": [
     "node.js",
@@ -22,6 +23,7 @@
     "express": "^4.17.1",
     "jsonwebtoken": "^8.5.1",
     "mysql2": "^2.1.0",
+    "nodemon": "^2.0.7",
     "sequelize": "^5.21.3"
   }
 }

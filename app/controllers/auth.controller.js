@@ -1,7 +1,7 @@
 const db = require("../models");
 const config = require("../config/auth.config");
 const User = db.user;
-const Role = db.role;
+// const Role = db.role;
 
 const Op = db.Sequelize.Op;
 
@@ -16,39 +16,34 @@ exports.signup = (req, res) => {
     password: bcrypt.hashSync(req.body.password, 8)
   })
     .then(user => {
-      if (req.body.roles) {
-        Role.findAll({
-          where: {
-            name: {
-              [Op.or]: req.body.roles
-            }
-          }
-        }).then(roles => {
-          user.setRoles(roles).then(() => {
-            res.send({ message: "User registered successfully!" });
-          });
-        });
-      } else {
-        // user role = 1
-        user.setRoles([1]).then(() => {
-          res.send({ message: "User registered successfully!" });
-        });
-      }
+      var token = jwt.sign({ id: user.id }, config.secret, {
+        expiresIn: 86400 // 24 hours
+      });
+
+      res.status(200).send({
+        error: false,
+        user: {
+          id: user.id,
+          username: user.username,
+          email: user.email,
+        },
+        token: token
+      });
     })
     .catch(err => {
-      res.status(500).send({ message: err.message });
+      res.status(500).send({error: true, errorMessage: err.message });
     });
 };
 
 exports.signin = (req, res) => {
   User.findOne({
     where: {
-      username: req.body.username
+      email: req.body.email
     }
   })
     .then(user => {
       if (!user) {
-        return res.status(404).send({ message: "User Not found." });
+        return res.status(404).send({error: true, errorMessage: "User Not found." });
       }
 
       var passwordIsValid = bcrypt.compareSync(
@@ -58,8 +53,9 @@ exports.signin = (req, res) => {
 
       if (!passwordIsValid) {
         return res.status(401).send({
+          error: true,
           accessToken: null,
-          message: "Invalid Password!"
+          errorMessage: "Invalid Password!"
         });
       }
 
@@ -67,21 +63,17 @@ exports.signin = (req, res) => {
         expiresIn: 86400 // 24 hours
       });
 
-      var authorities = [];
-      user.getRoles().then(roles => {
-        for (let i = 0; i < roles.length; i++) {
-          authorities.push("ROLE_" + roles[i].name.toUpperCase());
-        }
-        res.status(200).send({
+      res.status(200).send({
+        error: false,
+        user: {
           id: user.id,
           username: user.username,
           email: user.email,
-          roles: authorities,
-          accessToken: token
-        });
+        },
+        token: token
       });
     })
     .catch(err => {
-      res.status(500).send({ message: err.message });
+      res.status(500).send({error: true, errorMessage: err.message });
     });
 };
