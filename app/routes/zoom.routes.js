@@ -22,7 +22,7 @@ module.exports = function(app) {
 
   app.post(
     "/api/zoom/get_zoom_user",
-    authJwt.verifyToken,
+    // authJwt.verifyToken,
     controller.getUserInfo
   );
 
