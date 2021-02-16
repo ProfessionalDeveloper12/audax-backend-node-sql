@@ -1,4 +1,5 @@
 const zoomConfig = require('../config/zoom.config');
+const request = require('request');
 
 exports.zoomLogin = (req, res) => {
   if (req.body.code) {
