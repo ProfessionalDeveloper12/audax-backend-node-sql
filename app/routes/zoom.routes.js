@@ -28,7 +28,7 @@ module.exports = function(app) {
 
   app.post(
     "/api/zoom/meetings",
-    authJwt.verifyToken,
+    // authJwt.verifyToken,
     controller.getUserMeetings
   )
 };
