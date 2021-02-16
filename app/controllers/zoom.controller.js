@@ -20,8 +20,6 @@ exports.zoomLogin = (req, res) => {
       }
 
       // res.status(200).send({ error: false, zoomAccessToken: body.access_token, zoomRefreshToken: body.refresh_token })
-
-
       if (body.access_token) {
         const zoomAccessToken = body.access_token;
 
