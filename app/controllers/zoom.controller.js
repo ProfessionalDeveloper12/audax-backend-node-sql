@@ -4,8 +4,7 @@ exports.zoomLogin = (req, res) => {
   if (req.body.code) {
     let url = 'https://zoom.us/oauth/token?grant_type=authorization_code&code=' + req.body.code + '&redirect_uri=' + zoomConfig.REDIRECT_URL;
 
-    res.status(200).send('url')
-    return
+    return res.send({url, code: req.body.code})
 
     request.post(url, (error, response, body) => {
 
