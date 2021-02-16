@@ -101,6 +101,8 @@ exports.getUserMeetings = (req, res) => {
   const userId = req.body.userId;
   const zoomAccessToken = req.body.zoomAccessToken;
 
+  console.log({userId, zoomAccessToken})
+
   const url = `https://api.zoom.us/v2/users/${userId}/meetings`;
 
   request({
