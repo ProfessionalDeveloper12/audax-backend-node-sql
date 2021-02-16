@@ -93,7 +93,7 @@ exports.getUserInfo = (req, res) => {
     if (err) {
       res.status(500).send({error: true, errorObj: err})
     }
-    res.status(200).send(body);
+    res.status(200).send({zoomUser: body, error: false});
   });
 }
 
@@ -114,7 +114,7 @@ exports.getUserMeetings = (req, res) => {
     if (err) {
       return res.status(500).send({ error: true, errorObj: err });
     } else {
-      res.status(200).send(body);
+      res.status(200).send({zoomUser: body, error:false});
     }
   })
 };
