@@ -52,16 +52,16 @@ exports.zoomLogin = (req, res) => {
                 return
               } else {
 
-                const getRecodingUrl = `https://api.zoom.us/v2/users/${zoomUser.id}/recodings`;
+                const getRecordingUrl = `https://api.zoom.us/v2/users/${zoomUser.id}/recordings`;
                 request({
                   headers: {
                     'Authorization': 'Bearer ' + zoomAccessToken,
                     'Content-Type': 'application/json'
                   },
-                  uri: getRecodingUrl,
+                  uri: getRecordingUrl,
                   method: 'GET'
                 }, function (e, r, body4) {
-                  const zoomrecodings = JSON.parse(body4);
+                  const zoomRecordings = JSON.parse(body4);
 
                   if (e) {
                     res.status(500).send({ error: true, errorObj: e });
@@ -74,7 +74,7 @@ exports.zoomLogin = (req, res) => {
                         zoomRefreshToken: body.refresh_token,
                         zoomUser: zoomUser,
                         zoomMeetings: zoomMeetings,
-                        zoomrecodings: zoomrecodings
+                        zoomRecordings: zoomRecordings
                       }
                     });
                   }
