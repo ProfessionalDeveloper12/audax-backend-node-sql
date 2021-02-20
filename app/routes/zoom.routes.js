@@ -30,5 +30,11 @@ module.exports = function(app) {
     "/api/zoom/meetings",
     // authJwt.verifyToken,
     controller.getUserMeetings
-  )
+  );
+
+  app.post(
+    "/api/zoom/meeting",
+    // authJwt.verifyToken,
+    controller.getMeeting
+  );
 };
