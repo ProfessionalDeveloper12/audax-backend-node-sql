@@ -144,23 +144,21 @@ exports.getMeeting = (req, res) => {
   const meetingId = req.body.meetingId;
   const zoomAccessToken = req.body.zoomAccessToken;
 
-  res.send({meetingId, zoomAccessToken})
+  const url = `https://api.zoom.us/v2/meetings/${meetingId}`;
 
-  const url = `https://api.zoom.us/v2/users/${userId}/meetings`;
-
-  // request({
-  //   headers: {
-  //     'Authorization': 'Bearer ' + zoomAccessToken,
-  //     'Content-Type': 'application/json'
-  //   },
-  //   uri: url,
-  //   method: 'GET'
-  // }, function (err, response, body) {
-  //   if (err) {
-  //     return res.status(500).send({ error: true, errorObj: err });
-  //   } else {
-  //     res.status(200).send({ zoomUser: JSON.parse(body), error: false });
-  //   }
-  // })
+  request({
+    headers: {
+      'Authorization': 'Bearer ' + zoomAccessToken,
+      'Content-Type': 'application/json'
+    },
+    uri: url,
+    method: 'GET'
+  }, function (err, response, body) {
+    if (err) {
+      return res.status(500).send({ error: true, errorObj: err });
+    } else {
+      res.status(200).send({ meeting: JSON.parse(body), error: false });
+    }
+  })
 };
 
