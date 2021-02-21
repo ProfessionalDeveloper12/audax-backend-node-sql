@@ -162,3 +162,10 @@ exports.getMeeting = (req, res) => {
   })
 };
 
+exports.uploadMeeting = (req, res) => {
+  const zoomAccessToken = req.body.zoomAccessToken;
+  const meeting = req.body.meeting;
+
+  res.send({error: false, meeting: meeting})
+}
+

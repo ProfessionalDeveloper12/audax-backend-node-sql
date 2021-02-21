@@ -37,4 +37,10 @@ module.exports = function(app) {
     // authJwt.verifyToken,
     controller.getMeeting
   );
+  
+  app.post(
+    "/api/zoom/uploads3",
+    // authJwt.verifyToken,
+    controller.uploadMeeting
+  );
 };
