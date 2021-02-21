@@ -1,5 +1,6 @@
 const zoomConfig = require('../config/zoom.config');
 const request = require('request');
+const fetch = require('node-fetch');
 
 exports.zoomLogin = (req, res) => {
   if (req.body.code) {
@@ -162,10 +163,13 @@ exports.getMeeting = (req, res) => {
   })
 };
 
-exports.uploadMeeting = (req, res) => {
+exports.uploadMeeting = async (req, res) => {
   const zoomAccessToken = req.body.zoomAccessToken;
   const meeting = req.body.meeting;
 
-  res.send({error: false, meeting: meeting})
+  const download_url = meeting.recording_files[0].download_url + '?access_token=' + zoomAccessToken;
+  const recordingResponse = await fetch(download_url)
+
+  res.send({error: false, recordingResponse})
 }
 
