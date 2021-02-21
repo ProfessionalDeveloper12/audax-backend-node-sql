@@ -171,7 +171,7 @@ exports.uploadMeeting = async (req, res) => {
   request({
     headers: {
       'Authorization': 'Bearer ' + zoomAccessToken,
-      // 'Content-Type': 'application/json'
+      'Content-Type': 'application/json'
     },
     uri: download_url,
     method: 'GET'
@@ -179,11 +179,9 @@ exports.uploadMeeting = async (req, res) => {
     if (err) {
       return res.status(500).send({ error: true, errorObj: err });
     } else {
-      res.status(200).send({ meeting: JSON.parse(body), error: false });
+      res.status(200).send({ meeting: body, error: false });
     }
   })
-  const recordingResponse = await fetch(download_url)
 
-  res.send({error: false, recordingResponse})
 }
 
