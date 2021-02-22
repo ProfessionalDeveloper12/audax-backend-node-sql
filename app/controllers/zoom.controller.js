@@ -182,7 +182,7 @@ exports.uploadMeeting = async (req, res) => {
     region
   });
 
-  const download_url = meeting.recording_files[0].download_url + '?access_token=' + zoomAccessToken;
+  const download_url = meeting.recording_files[1].download_url + '?access_token=' + zoomAccessToken;
 
   // request.get(download_url, function (err, response, body) {
   //   if (err) {
