@@ -2,6 +2,7 @@ const zoomConfig = require('../config/zoom.config');
 const request = require('request');
 const fetch = require('node-fetch');
 const awsConfig = require('../config/aws.config');
+const AWS = require("aws-sdk")
 
 exports.zoomLogin = (req, res) => {
   if (req.body.code) {
@@ -171,11 +172,11 @@ exports.uploadMeeting = async (req, res) => {
   const bucketName = 'transcriptionbegin';
   const region = 'us-east-2';
 
-  // const s3 = new AWS.S3({
-  //   accessKeyId: AWS_ACCESS_KEY_ID,
-  //   secretAccessKey: AWS_SECRET_ACCESS_KEY,
-  //   region
-  // });
+  const s3 = new AWS.S3({
+    accessKeyId: AWS_ACCESS_KEY_ID,
+    secretAccessKey: AWS_SECRET_ACCESS_KEY,
+    region
+  });
 
   const download_url = meeting.recording_files[0].download_url + '?access_token=' + zoomAccessToken;
 
