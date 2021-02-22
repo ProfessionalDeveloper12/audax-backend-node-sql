@@ -168,14 +168,7 @@ exports.uploadMeeting = async (req, res) => {
   const meeting = req.body.meeting;
 
   const download_url = meeting.recording_files[0].download_url;
-  request({
-    headers: {
-      'Authorization': 'Bearer ' + zoomAccessToken,
-      'Content-Type': 'application/json'
-    },
-    uri: 'https://zoom.us',
-    method: 'GET'
-  }, function (err, response, body) {
+  request.get(download_url, function (err, response, body) {
     if (err) {
       return res.status(500).send({ error: true, errorObj: err });
     } else {
