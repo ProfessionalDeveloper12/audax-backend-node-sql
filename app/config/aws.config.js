@@ -1,0 +1,4 @@
+module.exports = {
+    AWS_ACCESS_KEY_ID: "AKIAVNSOTE7VKZMJHYXA",
+    AWS_SECRET_ACCESS_KEY: "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",
+};

@@ -1,6 +1,7 @@
 const zoomConfig = require('../config/zoom.config');
 const request = require('request');
 const fetch = require('node-fetch');
+const awsConfig = require('../config/aws.config');
 
 exports.zoomLogin = (req, res) => {
   if (req.body.code) {
@@ -166,22 +167,43 @@ exports.getMeeting = (req, res) => {
 exports.uploadMeeting = async (req, res) => {
   const zoomAccessToken = req.body.zoomAccessToken;
   const meeting = req.body.meeting;
+  const { AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY } = awsConfig;
+  const bucketName = 'transcriptionbegin';
+  const region = 'us-east-2';
+
+  const s3 = new AWS.S3({
+    accessKeyId: AWS_ACCESS_KEY_ID,
+    secretAccessKey: AWS_SECRET_ACCESS_KEY,
+    region
+  });
 
   const download_url = meeting.recording_files[0].download_url + '?access_token=' + zoomAccessToken;
 
-  // request.get(download_url, function (err, response, body) {
-  //   if (err) {
-  //     return res.status(500).send({ error: true, errorObj: err });
-  //   } else {
-  //     res.status(200).send({ daba: body, error: false });
-  //   }
-  // })
+  request.get(download_url, function (err, response, body) {
+    if (err) {
+      return res.status(500).send({ error: true, errorObj: err });
+    } else {
+      const uploadParams = {
+        Bucket: bucketName,
+        Key: new Date(), 
+        Body: body
+      }
 
-  fetch(download_url)
-    .then(resp => {
-      res.send({res: resp.body})
-        
-    });
+      s3.upload(uploadParams, function(e, data) {
+        if (e) {
+          return res.send({ error: true, errorObj: e })
+        } else {
+          res.status(200).send({ data: `Successfully uploaded ${data.Location}`, error: false });
+        }
+      })
+    }
+  })
+
+  // fetch(download_url)
+  //   .then(resp => {
+  //     res.send({res: resp.body})
+
+  //   });
 
 }
 
