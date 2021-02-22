@@ -174,7 +174,7 @@ exports.uploadMeeting = async (req, res) => {
   const bucketName = 'transcriptionbegin';
   const region = 'us-east-2';
   const meetingTopic = meeting.topic.replace(/[^a-zA-Z0-9]/g, '_').toLowerCase();
-  const fileName = `${meetingTopic}--${meeting.uuid}--${shortid.generate()}.${meeting.recording_files[0].file_type}`;
+  const fileName = `${meetingTopic}--${shortid.generate()}.${meeting.recording_files[0].file_type}`;
 
   const s3 = new AWS.S3({
     accessKeyId: AWS_ACCESS_KEY_ID,
@@ -182,42 +182,46 @@ exports.uploadMeeting = async (req, res) => {
     region
   });
 
-  const download_url = meeting.recording_files[1].download_url + '?access_token=' + zoomAccessToken;
-
-  // request.get(download_url, function (err, response, body) {
-  //   if (err) {
-  //     return res.status(500).send({ error: true, errorObj: err });
-  //   } else {
-  //     const uploadParams = {
-  //       Bucket: bucketName,
-  //       Key: fileName, 
-  //       Body: body
-  //     }
-
-  //     s3.upload(uploadParams, function(e, data) {
-  //       if (e) {
-  //         return res.send({ error: true, errorObj: e })
-  //       } else {
-  //         res.status(200).send({ data: `Successfully uploaded ${data.Location}`, error: false });
-  //       }
-  //     })
-  //   }
-  // })
-
-  const recordingResponse = await fetch(download_url);
-
-  const uploadParams = {
-    Bucket: bucketName,
-    Key: fileName, 
-    Body: recordingResponse.body
-  }
-
-  s3.upload(uploadParams, function(e, data) {
-    if (e) {
-      return res.send({ error: true, errorObj: e })
-    } else {
-      res.status(200).send({ data: `Successfully uploaded ${data.Location}`, error: false });
+  for (i = 0; i < 2; i++) {
+    if (meeting.recording_files[i].file_type === 'MP4') {
+      const download_url = meeting.recording_files[i].download_url + '?access_token=' + zoomAccessToken;
+    
+      // request.get(download_url, function (err, response, body) {
+      //   if (err) {
+      //     return res.status(500).send({ error: true, errorObj: err });
+      //   } else {
+      //     const uploadParams = {
+      //       Bucket: bucketName,
+      //       Key: fileName, 
+      //       Body: body
+      //     }
+    
+      //     s3.upload(uploadParams, function(e, data) {
+      //       if (e) {
+      //         return res.send({ error: true, errorObj: e })
+      //       } else {
+      //         res.status(200).send({ data: `Successfully uploaded ${data.Location}`, error: false });
+      //       }
+      //     })
+      //   }
+      // })
+    
+      const recordingResponse = await fetch(download_url);
+    
+      const uploadParams = {
+        Bucket: bucketName,
+        Key: fileName, 
+        Body: recordingResponse.body
+      }
+    
+      s3.upload(uploadParams, function(e, data) {
+        if (e) {
+          return res.send({ error: true, errorObj: e })
+        } else {
+          res.status(200).send({ data: `Successfully uploaded ${data.Location}`, error: false });
+        }
+      })
     }
-  })
+  }
 }
 
