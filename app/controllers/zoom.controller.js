@@ -171,11 +171,11 @@ exports.uploadMeeting = async (req, res) => {
   const bucketName = 'transcriptionbegin';
   const region = 'us-east-2';
 
-  const s3 = new AWS.S3({
-    accessKeyId: AWS_ACCESS_KEY_ID,
-    secretAccessKey: AWS_SECRET_ACCESS_KEY,
-    region
-  });
+  // const s3 = new AWS.S3({
+  //   accessKeyId: AWS_ACCESS_KEY_ID,
+  //   secretAccessKey: AWS_SECRET_ACCESS_KEY,
+  //   region
+  // });
 
   return res.send({awsConfig, s3});
 
