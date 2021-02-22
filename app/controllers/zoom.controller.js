@@ -189,7 +189,7 @@ exports.uploadMeeting = async (req, res) => {
         Body: body
       }
 
-      res.send({error: false, data: "success"})
+      res.send({error: false, data: "success", body})
 
       // s3.upload(uploadParams, function(e, data) {
       //   if (e) {
