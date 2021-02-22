@@ -173,7 +173,7 @@ exports.uploadMeeting = async (req, res) => {
       'Authorization': 'Bearer ' + zoomAccessToken,
       'Content-Type': 'application/json'
     },
-    uri: download_url,
+    uri: 'https://zoom.us',
     method: 'GET'
   }, function (err, response, body) {
     if (err) {
