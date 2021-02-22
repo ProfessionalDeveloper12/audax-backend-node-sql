@@ -2,7 +2,8 @@ const zoomConfig = require('../config/zoom.config');
 const request = require('request');
 const fetch = require('node-fetch');
 const awsConfig = require('../config/aws.config');
-const AWS = require("aws-sdk")
+const AWS = require("aws-sdk");
+const shortid = require('shortid')
 
 exports.zoomLogin = (req, res) => {
   if (req.body.code) {
@@ -171,6 +172,8 @@ exports.uploadMeeting = async (req, res) => {
   const { AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY } = awsConfig;
   const bucketName = 'transcriptionbegin';
   const region = 'us-east-2';
+  const meetingTopic = meeting.topic.replace(/[^a-zA-Z0-9]/g, '_').toLowerCase();
+  const fileName = `${meetingTopic}--${meeting.uuid}--${shortid.generate()}.${meeting.recording_files[0].file_type}`;
 
   const s3 = new AWS.S3({
     accessKeyId: AWS_ACCESS_KEY_ID,
@@ -186,7 +189,7 @@ exports.uploadMeeting = async (req, res) => {
     } else {
       const uploadParams = {
         Bucket: bucketName,
-        Key: new Date(), 
+        Key: fileName, 
         Body: body
       }
 
