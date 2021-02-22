@@ -167,7 +167,7 @@ exports.getMeeting = (req, res) => {
 exports.uploadMeeting = async (req, res) => {
   const zoomAccessToken = req.body.zoomAccessToken;
   const meeting = req.body.meeting;
-  // const { AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY } = awsConfig;
+  const { AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY } = awsConfig;
   const bucketName = 'transcriptionbegin';
   const region = 'us-east-2';
 
@@ -177,7 +177,7 @@ exports.uploadMeeting = async (req, res) => {
   //   region
   // });
 
-  return res.send({data: "success"});
+  return res.send({data: "success", awsConfig});
 
   // const download_url = meeting.recording_files[0].download_url + '?access_token=' + zoomAccessToken;
 
