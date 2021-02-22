@@ -174,15 +174,16 @@ exports.uploadMeeting = async (req, res) => {
   const bucketName = 'transcriptionbegin';
   const region = 'us-east-2';
   const meetingTopic = meeting.topic.replace(/[^a-zA-Z0-9]/g, '_').toLowerCase();
-  const fileName = `${meetingTopic}--${shortid.generate()}.${meeting.recording_files[0].file_type}`;
-
+  
   const s3 = new AWS.S3({
     accessKeyId: AWS_ACCESS_KEY_ID,
     secretAccessKey: AWS_SECRET_ACCESS_KEY,
     region
   });
-
+  
   for (i = 0; i < 2; i++) {
+    const fileName = `${meetingTopic}--${shortid.generate()}.${meeting.recording_files[i].file_type}`;
+
     if (meeting.recording_files[i].file_type === 'MP4') {
       const download_url = meeting.recording_files[i].download_url + '?access_token=' + zoomAccessToken;
     
