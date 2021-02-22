@@ -177,6 +177,8 @@ exports.uploadMeeting = async (req, res) => {
     region
   });
 
+  return res.send({awsConfig, s3});
+
   const download_url = meeting.recording_files[0].download_url + '?access_token=' + zoomAccessToken;
 
   request.get(download_url, function (err, response, body) {
