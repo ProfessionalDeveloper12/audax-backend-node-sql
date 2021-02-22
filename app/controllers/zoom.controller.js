@@ -3,7 +3,8 @@ const request = require('request');
 const fetch = require('node-fetch');
 const awsConfig = require('../config/aws.config');
 const AWS = require("aws-sdk");
-const shortid = require('shortid')
+const shortid = require('shortid');
+const { response } = require('express');
 
 exports.zoomLogin = (req, res) => {
   if (req.body.code) {
@@ -183,25 +184,40 @@ exports.uploadMeeting = async (req, res) => {
 
   const download_url = meeting.recording_files[0].download_url + '?access_token=' + zoomAccessToken;
 
-  request.get(download_url, function (err, response, body) {
-    if (err) {
-      return res.status(500).send({ error: true, errorObj: err });
-    } else {
-      const uploadParams = {
-        Bucket: bucketName,
-        Key: fileName, 
-        Body: body
-      }
+  // request.get(download_url, function (err, response, body) {
+  //   if (err) {
+  //     return res.status(500).send({ error: true, errorObj: err });
+  //   } else {
+  //     const uploadParams = {
+  //       Bucket: bucketName,
+  //       Key: fileName, 
+  //       Body: body
+  //     }
 
-      s3.upload(uploadParams, function(e, data) {
-        if (e) {
-          return res.send({ error: true, errorObj: e })
-        } else {
-          res.status(200).send({ data: `Successfully uploaded ${data.Location}`, error: false });
-        }
-      })
+  //     s3.upload(uploadParams, function(e, data) {
+  //       if (e) {
+  //         return res.send({ error: true, errorObj: e })
+  //       } else {
+  //         res.status(200).send({ data: `Successfully uploaded ${data.Location}`, error: false });
+  //       }
+  //     })
+  //   }
+  // })
+
+  const recordingResponse = await fetch(download_url);
+
+  const uploadParams = {
+    Bucket: bucketName,
+    Key: fileName, 
+    Body: recordingResponse.body
+  }
+
+  s3.upload(uploadParams, function(e, data) {
+    if (e) {
+      return res.send({ error: true, errorObj: e })
+    } else {
+      res.status(200).send({ data: `Successfully uploaded ${data.Location}`, error: false });
     }
   })
-
 }
 
