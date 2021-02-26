@@ -57,7 +57,7 @@ exports.zoomLogin = (req, res) => {
               } else {
 
                 const today = new Date();
-                const fromDay = new Date().setDate(today.getDate() - 30)
+                const fromDay = new Date(today.setDate(today.getDate() - 28))
                 const from = fromDay.toISOString().split('T')[0];
 
                 const getRecordingUrl = `https://api.zoom.us/v2/users/${zoomUser.id}/recordings?from=${from}`;
