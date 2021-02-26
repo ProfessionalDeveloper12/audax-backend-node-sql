@@ -32,7 +32,6 @@ db.sequelize.sync();
 app.get("/", (req, res) => {
   res.send("Welcome to Audax  !.(" + process.env.NODE_ENV + ")");
 });
-console.log(process.env.NODE_ENV)
 
 // routes
 require('./app/routes/auth.routes')(app);

@@ -56,7 +56,11 @@ exports.zoomLogin = (req, res) => {
                 return
               } else {
 
-                const getRecordingUrl = `https://api.zoom.us/v2/users/${zoomUser.id}/recordings`;
+                const today = new Date();
+                const fromDay = new Date().setDate(today.getDate() - 30)
+                const from = fromDay.toISOString().split('T')[0];
+
+                const getRecordingUrl = `https://api.zoom.us/v2/users/${zoomUser.id}/recordings?from=${from}`;
                 request({
                   headers: {
                     'Authorization': 'Bearer ' + zoomAccessToken,
