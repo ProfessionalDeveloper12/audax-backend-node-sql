@@ -175,7 +175,7 @@ exports.getParticipants = (req, res) => {
   console.log(req.body);
   const meetingId = req.body.meetingId;
   const zoomAccessToken = req.body.zoomAccessToken;
-  const url = `https://api.zoom.us/v2/metrics/meetings/${meetingId}/participants`;
+  const url = `https://api.zoom.us/v2/meetings/${meetingId}/participants`;
 
   request({
     headers: {
