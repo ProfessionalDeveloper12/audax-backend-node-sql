@@ -4,7 +4,6 @@ const fetch = require('node-fetch');
 const awsConfig = require('../config/aws.config');
 const AWS = require("aws-sdk");
 const shortid = require('shortid');
-const { response } = require('express');
 
 exports.zoomLogin = (req, res) => {
   if (req.body.code) {
@@ -209,7 +208,7 @@ exports.uploadMeeting = async (req, res) => {
     
       const recordingResponse = await fetch(download_url);
     
-      const uploadParams = {
+      const uploadParams = {  
         Bucket: bucketName,
         Key: fileName, 
         Body: recordingResponse.body

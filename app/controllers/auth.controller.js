@@ -13,7 +13,7 @@ exports.signup = (req, res) => {
   User.create({
     username: req.body.username,
     email: req.body.email,
-    password: bcrypt.hashSync(req.body.password, 8)
+    password: bcrypt.hashSync(req.body.password, 8),
   })
     .then(user => {
       var token = jwt.sign({ id: user.id }, config.secret, {
@@ -21,12 +21,8 @@ exports.signup = (req, res) => {
       });
 
       res.status(200).send({
+        user,
         error: false,
-        user: {
-          id: user.id,
-          username: user.username,
-          email: user.email,
-        },
         token: token
       });
     })
@@ -65,11 +61,7 @@ exports.signin = (req, res) => {
 
       res.status(200).send({
         error: false,
-        user: {
-          id: user.id,
-          username: user.username,
-          email: user.email,
-        },
+        user,
         token: token
       });
     })
