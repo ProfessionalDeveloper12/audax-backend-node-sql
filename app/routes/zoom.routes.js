@@ -43,4 +43,10 @@ module.exports = function(app) {
     // authJwt.verifyToken,
     controller.uploadMeeting
   );
+  
+  app.post(
+    "/api/zoom/get_participants",
+    authJwt.verifyToken,
+    controller.getParticipants
+  );
 };

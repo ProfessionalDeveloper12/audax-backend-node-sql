@@ -4,6 +4,7 @@ const fetch = require('node-fetch');
 const awsConfig = require('../config/aws.config');
 const AWS = require("aws-sdk");
 const shortid = require('shortid');
+const { ImportExport } = require('aws-sdk');
 
 exports.zoomLogin = (req, res) => {
   if (req.body.code) {
@@ -170,6 +171,28 @@ exports.getMeeting = (req, res) => {
   })
 };
 
+exports.getParticipants = (req, res) => {
+  console.log(req.body);
+  const meetingId = req.body.meetingId;
+  const zoomAccessToken = req.body.zoomAccessToken;
+  const url = `https://api.zoom.us/v2/metrics/meetings/${meetingId}/participants`;
+
+  request({
+    headers: {
+      'Authorization': 'Bearer ' + zoomAccessToken,
+      'Content-Type': 'application/json'
+    },
+    method: 'GET',
+    url
+  }, function (err, respoonse, body) {
+    if (err) {
+      return res.status(500).send({ error: true, errorObj: err });
+    } else {
+      res.status(200).send({ error: false, participants: JSON.parse(body) })
+    }
+  })
+}
+
 exports.uploadMeeting = async (req, res) => {
   const zoomAccessToken = req.body.zoomAccessToken;
   const meeting = req.body.meeting;
@@ -177,19 +200,19 @@ exports.uploadMeeting = async (req, res) => {
   const bucketName = 'transcriptionbegin';
   const region = 'us-east-2';
   const meetingTopic = meeting.topic.replace(/[^a-zA-Z0-9]/g, '_').toLowerCase();
-  
+
   const s3 = new AWS.S3({
     accessKeyId: AWS_ACCESS_KEY_ID,
     secretAccessKey: AWS_SECRET_ACCESS_KEY,
     region
   });
-  
+
   for (i = 0; i < 2; i++) {
     const fileName = `${meetingTopic}--${shortid.generate()}.${meeting.recording_files[i].file_type}`;
 
     if (meeting.recording_files[i].file_type === 'MP4') {
       const download_url = meeting.recording_files[i].download_url + '?access_token=' + zoomAccessToken;
-    
+
       // request.get(download_url, function (err, response, body) {
       //   if (err) {
       //     return res.status(500).send({ error: true, errorObj: err });
@@ -199,7 +222,7 @@ exports.uploadMeeting = async (req, res) => {
       //       Key: fileName, 
       //       Body: body
       //     }
-    
+
       //     s3.upload(uploadParams, function(e, data) {
       //       if (e) {
       //         return res.send({ error: true, errorObj: e })
@@ -209,16 +232,16 @@ exports.uploadMeeting = async (req, res) => {
       //     })
       //   }
       // })
-    
+
       const recordingResponse = await fetch(download_url);
-    
-      const uploadParams = {  
+
+      const uploadParams = {
         Bucket: bucketName,
-        Key: fileName, 
+        Key: fileName,
         Body: recordingResponse.body
       }
-    
-      s3.upload(uploadParams, function(e, data) {
+
+      s3.upload(uploadParams, function (e, data) {
         if (e) {
           return res.send({ error: true, errorObj: e })
         } else {
