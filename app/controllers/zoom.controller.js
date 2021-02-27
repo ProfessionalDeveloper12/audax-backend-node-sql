@@ -173,9 +173,9 @@ exports.getMeeting = (req, res) => {
 
 exports.getParticipants = (req, res) => {
   console.log(req.body);
-  const meetingId = req.body.meetingId;
+  const uuid = req.body.uuid;
   const zoomAccessToken = req.body.zoomAccessToken;
-  const url = `https://api.zoom.us/v2/meetings/${meetingId}/participants`;
+  const url = `https://api.zoom.us/v2/past_meetings/${uuid}/participants`;
 
   request({
     headers: {
@@ -186,6 +186,7 @@ exports.getParticipants = (req, res) => {
     url
   }, function (err, respoonse, body) {
     if (err) {
+      console.log(err)
       return res.status(500).send({ error: true, errorObj: err });
     } else {
       res.status(200).send({ error: false, participants: JSON.parse(body) })
