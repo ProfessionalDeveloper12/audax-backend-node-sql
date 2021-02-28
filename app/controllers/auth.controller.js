@@ -2,6 +2,8 @@ const db = require("../models");
 const config = require("../config/auth.config");
 const User = db.user;
 // const Role = db.role;
+const Payment = db.payment;
+
 
 const Op = db.Sequelize.Op;
 
@@ -20,14 +22,50 @@ exports.signup = (req, res) => {
         expiresIn: 86400 // 24 hours
       });
 
-      res.status(200).send({
-        user,
-        error: false,
-        token: token
-      });
+      // get user's paid status
+      const today = new Date();
+      const year = today.getFullYear();
+      const month = today.getMonth();
+
+      if (month == 0) {
+        year--;
+        month = 11;
+      }
+
+      Payment.findOne({
+        where: {
+          user_id: user.id,
+          year: year,
+          month: month
+        }
+      })
+        .then(payment => {
+          user = user.toJSON();
+
+          if (!payment) {
+            // User didn't use this service for the last month
+            user.lastMonthUsageAmount = 0;
+            user.lastMonthPaidStatus = 0;
+
+            return res.status(200).send({
+              error: false,
+              user: user,
+              token: token
+            });
+          }
+
+          user.lastMonthUsageAmount = payment.usage_amount;
+          user.lastMonthPaidStatus = payment.paid_status;
+
+          res.status(200).send({
+            error: false,
+            user: user,
+            token: token
+          });
+        })
     })
     .catch(err => {
-      res.status(500).send({error: true, errorMessage: err.message });
+      res.status(500).send({ error: true, errorMessage: err.message });
     });
 };
 
@@ -39,7 +77,7 @@ exports.signin = (req, res) => {
   })
     .then(user => {
       if (!user) {
-        return res.status(404).send({error: true, errorMessage: "User Not found." });
+        return res.status(404).send({ error: true, errorMessage: "User Not found." });
       }
 
       var passwordIsValid = bcrypt.compareSync(
@@ -59,13 +97,49 @@ exports.signin = (req, res) => {
         expiresIn: 86400 // 24 hours
       });
 
-      res.status(200).send({
-        error: false,
-        user,
-        token: token
-      });
+      // get user's paid status
+      const today = new Date();
+      const year = today.getFullYear();
+      const month = today.getMonth();
+
+      if (month == 0) {
+        year--;
+        month = 11;
+      }
+
+      Payment.findOne({
+        where: {
+          user_id: user.id,
+          year: year,
+          month: month
+        }
+      })
+        .then(payment => {
+          user = user.toJSON();
+
+          if (!payment) {
+            // User didn't use this service for the last month
+            user.lastMonthUsageAmount = 0;
+            user.lastMonthPaidStatus = 0;
+
+            return res.status(200).send({
+              error: false,
+              user: user,
+              token: token
+            });
+          }
+
+          user.lastMonthUsageAmount = payment.usage_amount;
+          user.lastMonthPaidStatus = payment.paid_status;
+
+          res.status(200).send({
+            error: false,
+            user: user,
+            token: token
+          });
+        })
     })
     .catch(err => {
-      res.status(500).send({error: true, errorMessage: err.message });
+      res.status(500).send({ error: true, errorMessage: err.message });
     });
 };

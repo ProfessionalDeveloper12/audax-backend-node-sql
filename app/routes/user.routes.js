@@ -35,4 +35,10 @@ module.exports = function(app) {
     [authJwt.verifyToken],
     controller.updateProfile
   );
+
+  app.post(
+    "/api/user/update_payment_status",
+    authJwt.verifyToken,
+    controller.updatePaymentStatus
+  )
 };

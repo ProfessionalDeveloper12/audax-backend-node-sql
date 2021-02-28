@@ -14,4 +14,10 @@ module.exports = function(app) {
     "/api/aws/get_transcripts",
     controller.getTranscripts
   );
+
+  app.post(
+    "/api/aws/payment",
+    // authJwt.verifyToken,
+    controller.createPayment
+  );
 };

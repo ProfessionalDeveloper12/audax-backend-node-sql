@@ -1,10 +1,11 @@
 const db = require("../models");
-const config = require("../config/auth.config");
-const User = db.user;
 const request = require('request');
 const fetch = require('node-fetch');
 const awsConfig = require('../config/aws.config');
 const AWS = require('aws-sdk');
+const stripeConfig = require("../config/stripe.config");
+const stripe = require("stripe")(stripeConfig.STRIPE_SECRET_KEY);
+const YOUR_DOMAIN = process.env.NODE_ENV.trim() == "development" ? "http://localhost:3000/admin/payment" : "https://audaxfront.ukcourier.a2hosted.com/admin/payment";
 
 exports.getTranscripts = (req, res) => {
   const { AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY } = awsConfig;
@@ -35,4 +36,28 @@ exports.getTranscripts = (req, res) => {
     res.status(200).send({ error: false, scriptData: JSON.parse(objectData)});
   });
 };
+
+exports.createPayment = async (req, res) => {
+  const session = await stripe.checkout.sessions.create({
+    payment_method_types: ['card'],
+    line_items: [
+      {
+        price_data: {
+          currency: 'usd',
+          product_data: {
+            name: 'Service Usage of this month',
+            // images: ['https://i.imgur.com/EHyR2nP.png', 'https://i.imgur.com/EHyR2nP.png'],
+          },
+          unit_amount: 35000,
+        },
+        quantity: 1,
+      },
+    ],
+    mode: 'payment',
+    success_url: `${YOUR_DOMAIN}?success=true`,
+    cancel_url: `${YOUR_DOMAIN}?canceled=true`,
+  });
+
+  res.json({ id: session.id });
+}
 

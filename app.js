@@ -45,14 +45,3 @@ const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`);
 });
-
-today = new Date();
-
-console.log(today.toLocaleString())
-console.log(today.toLocaleString("en-US", {timeZone: "America/New_York"}))
-
-function convertTZ(date, tzString) {
-  return new Date((typeof date === "string" ? new Date(date) : date).toLocaleString("en-US", {timeZone: tzString}));   
-}
-
-console.log(convertTZ(today, "America/New_York").getTime())
