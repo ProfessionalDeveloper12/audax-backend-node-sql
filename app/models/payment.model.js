@@ -1,7 +1,7 @@
 module.exports = (sequelize, Sequelize) => {
     const Payment = sequelize.define("payments", {
         user_id: {
-            type: Sequelize.STRING
+            type: Sequelize.INTEGER
         },
         year: {
             type: Sequelize.INTEGER,
