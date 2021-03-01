@@ -5,7 +5,7 @@ const awsConfig = require('../config/aws.config');
 const AWS = require('aws-sdk');
 const stripeConfig = require("../config/stripe.config");
 const stripe = require("stripe")(stripeConfig.STRIPE_SECRET_KEY);
-const YOUR_DOMAIN = process.env.NODE_ENV.trim() == "development" ? "http://localhost:3000/admin/payment" : "https://audaxfront.ukcourier.a2hosted.com/admin/payment";
+const YOUR_DOMAIN = process.env.NODE_ENV.trim() == "development" ? "http://localhost:3000/admin/profile" : "https://audaxfront.ukcourier.a2hosted.com/admin/profile";
 
 exports.getTranscripts = (req, res) => {
   const { AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY } = awsConfig;
