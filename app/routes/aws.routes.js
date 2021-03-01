@@ -20,4 +20,10 @@ module.exports = function(app) {
     // authJwt.verifyToken,
     controller.createPayment
   );
+
+  app.post(
+    "/api/aws/update_speakers",
+    authJwt.verifyToken,
+    controller.updateSpeakers
+  )
 };

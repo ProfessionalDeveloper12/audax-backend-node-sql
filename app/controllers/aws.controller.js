@@ -5,6 +5,8 @@ const awsConfig = require('../config/aws.config');
 const AWS = require('aws-sdk');
 const stripeConfig = require("../config/stripe.config");
 const stripe = require("stripe")(stripeConfig.STRIPE_SECRET_KEY);
+const Speaker = db.speaker;
+
 const YOUR_DOMAIN = process.env.NODE_ENV.trim() == "development" ? "http://localhost:3000/admin/profile" : "https://audaxfront.ukcourier.a2hosted.com/admin/profile";
 
 exports.getTranscripts = (req, res) => {
@@ -25,15 +27,26 @@ exports.getTranscripts = (req, res) => {
   s3.getObject(getParams, function (err, data) {
     // Handle any error and exit
     if (err) {
-      res.status(401).send({error: true, errorObj: err});
+      res.status(401).send({ error: true, errorObj: err });
       return err;
     }
 
     // No error happened
     // Convert Body from a Buffer to a String
 
-    let objectData = data.Body.toString('utf-8'); // Use the encoding necessary
-    res.status(200).send({ error: false, scriptData: JSON.parse(objectData)});
+    let objectData = JSON.parse(data.Body.toString('utf-8')); // Use the encoding necessary
+
+    let speakers = [];
+
+    objectData.dialog.map((transcript, index) => {
+      if (!speakers.includes(transcript.speaker)) {
+        speakers.push(transcript.speaker);
+      }
+    });
+
+    objectData.speakers = speakers;
+
+    res.status(200).send({ error: false, scriptData: objectData });
   });
 };
 
@@ -59,5 +72,50 @@ exports.createPayment = async (req, res) => {
   });
 
   res.json({ id: session.id });
+}
+
+exports.updateSpeakers = (req, res) => {
+  const user_id = req.body.userId;
+  const meeting_uuid = req.body.meetingUUID;
+  const speakers = req.body.speakers.toString();
+
+  console.log(req.body)
+
+  Speaker.findOne({
+    where: {
+      user_id,
+      meeting_uuid,
+    }
+  })
+    .then(result => {
+      if (result) {
+        Speaker.update({
+            speakers: speakers
+          },
+          {
+            where: {
+              user_id,
+              meeting_uuid
+            }
+          })
+            .then(updatedRow => {
+              console.log('success')
+              res.status(200).send({ error: false, speakers: { meetingUUID: meeting_uuid, speakers: req.body.speakers } })
+            })
+      } else {
+        Speaker.create({
+          user_id,
+          meeting_uuid,
+          speakers
+        })
+          .then(createdSpeaker => {
+            res.status(200).send({ error: false, speakers: { meetingUUID: meeting_uuid, speakers: req.body.speakers } })
+          })
+      }
+    })
+    .catch(findErr => {
+      res.status(500).send({ error: true, errorMessage: 'Can\'t find speakers' })
+    })
+
 }
 
