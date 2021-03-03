@@ -79,8 +79,6 @@ exports.updateSpeakers = (req, res) => {
   const meeting_uuid = req.body.meetingUUID;
   const speakers = req.body.speakers.toString();
 
-  console.log(req.body)
-
   Speaker.findOne({
     where: {
       user_id,
@@ -90,18 +88,17 @@ exports.updateSpeakers = (req, res) => {
     .then(result => {
       if (result) {
         Speaker.update({
-            speakers: speakers
-          },
+          speakers: speakers
+        },
           {
             where: {
               user_id,
               meeting_uuid
             }
           })
-            .then(updatedRow => {
-              console.log('success')
-              res.status(200).send({ error: false, speakers: { meetingUUID: meeting_uuid, speakers: req.body.speakers } })
-            })
+          .then(updatedRow => {
+            res.status(200).send({ error: false, speakers: { meetingUUID: meeting_uuid, speakers: req.body.speakers } })
+          })
       } else {
         Speaker.create({
           user_id,
@@ -116,6 +113,28 @@ exports.updateSpeakers = (req, res) => {
     .catch(findErr => {
       res.status(500).send({ error: true, errorMessage: 'Can\'t find speakers' })
     })
+}
 
+exports.getSpeakers = (req, res) => {
+  const user_id = req.body.userId;
+  const meeting_uuid = req.body.meetingUUID;
+
+  Speaker.findOne({
+    where: {
+      user_id,
+      meeting_uuid,
+    }
+  })
+    .then(result => {
+      console.log(result)
+      if (result) {
+        res.status(200).send({ error: false, speakers: { meetingUUID: result.meeting_uuid, speakers: result.speakers.split(',') } })
+      } else {
+        res.status(404).send({ error: true, errorMessage: 'no result' })
+      }
+    })
+    .catch(findErr => {
+      res.status(500).send({ error: true, errorMessage: 'Can\'t find speakers' })
+    })
 }
 

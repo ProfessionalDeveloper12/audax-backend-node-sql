@@ -25,5 +25,11 @@ module.exports = function(app) {
     "/api/aws/update_speakers",
     authJwt.verifyToken,
     controller.updateSpeakers
-  )
+  );
+  
+  app.post(
+    "/api/aws/get_speakers",
+    authJwt.verifyToken,
+    controller.getSpeakers
+  );
 };
