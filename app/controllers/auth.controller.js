@@ -4,9 +4,6 @@ const User = db.user;
 // const Role = db.role;
 const Payment = db.payment;
 
-
-const Op = db.Sequelize.Op;
-
 var jwt = require("jsonwebtoken");
 var bcrypt = require("bcryptjs");
 

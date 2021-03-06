@@ -26,7 +26,7 @@ db.sequelize = sequelize;
 
 db.user = require("../models/user.model.js")(sequelize, Sequelize);
 db.payment = require("../models/payment.model.js")(sequelize, Sequelize);
-db.speaker = require("../models/speaker.model.js")(sequelize, Sequelize);
+db.transcript = require("./transcript.model.js")(sequelize, Sequelize);
 // db.user.hasMany(db.payment)
 // db.role = require("../models/role.model.js")(sequelize, Sequelize);
 

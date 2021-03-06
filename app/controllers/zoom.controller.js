@@ -172,7 +172,6 @@ exports.getMeeting = (req, res) => {
 };
 
 exports.getParticipants = (req, res) => {
-  console.log(req.body);
   const uuid = req.body.uuid;
   const zoomAccessToken = req.body.zoomAccessToken;
   const url = `https://api.zoom.us/v2/past_meetings/${uuid}/participants`;
