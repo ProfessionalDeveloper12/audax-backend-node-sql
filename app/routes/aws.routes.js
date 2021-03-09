@@ -44,5 +44,11 @@ module.exports = function(app) {
     "/api/aws/update_transcript",
     authJwt.verifyToken,
     controller.updateTranscript
+  );
+
+  app.post(
+    "/api/aws/add_transcript_comment",
+    authJwt.verifyToken,
+    controller.addTranscriptComment
   )
 };

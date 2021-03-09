@@ -164,7 +164,9 @@ exports.getSpeakers = (req, res) => {
 exports.saveTranscript = (req, res) => {
   const user_id = req.body.userId;
   const meeting_uuid = req.body.meetingUUID;
-  const transcript = JSON.stringify(req.body.transcript);
+  let transcript = req.body.transcript;
+  transcript.comments = [];
+  transcript = JSON.stringify(transcript);
 
   Transcript.create({
     user_id,
@@ -172,7 +174,7 @@ exports.saveTranscript = (req, res) => {
     transcript
   })
     .then(scriptData => {
-      res.status(200).send({error: false, scriptData})
+      res.status(200).send({error: false, scriptData: JSON.parse(scriptData.transcript)})
     })
     .catch(err => {
       res.status(500).send({error: true, errorObj: err});
@@ -211,4 +213,12 @@ exports.updateTranscript = (req, res) => {
     .catch(findErr => {
       res.status(500).send({ error: true, errorMessage: 'Can\'t find transcript' });
     })
+}
+
+exports.addTranscriptComment = (req, res) => {
+  const user_id = req.body.userId;
+  const meeting_uuid = req.body.meetingUUID;
+  const comment = req.body.comment
+
+  console.log(req.body, 'this is request body');
 }
