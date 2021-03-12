@@ -205,7 +205,7 @@ exports.getParticipants = (req, res) => {
         if (er) {
           res.status(500).send({ error: true, errorObj: er, er: 'error getting user' })
         } else {
-          res.status(200).send({ zoomUser: JSON.parse(body), error: false });
+          res.status(200).send({ zoomUser: JSON.parse(body1), error: false });
         }
       });
       // res.status(200).send({ error: false, participants: JSON.parse(body) })
