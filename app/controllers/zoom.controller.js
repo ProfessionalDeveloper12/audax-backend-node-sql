@@ -188,7 +188,27 @@ exports.getParticipants = (req, res) => {
       console.log(err)
       return res.status(500).send({ error: true, errorObj: err });
     } else {
-      res.status(200).send({ error: false, participants: JSON.parse(body) })
+      const participants = JSON.parse(body);
+
+      const user1 = participants.participants[0];
+
+      const getUserUrl = `https://api.zoom.us/v2/users${user1.id}`;
+
+      request({
+        headers: {
+          'Authorization': 'Bearer ' + zoomAccessToken,
+          'Content-Type': 'application/json'
+        },
+        method: 'GET',
+        getUserUrl
+      }, function(er, resp, body1) {
+        if (er) {
+          return res.status(500).send({error: true, errorObj: er});
+        } else {
+          res.status(200).send({error: false, user: JSON.parse(body1)});
+        }
+      })
+      // res.status(200).send({ error: false, participants: JSON.parse(body) })
     }
   })
 }
