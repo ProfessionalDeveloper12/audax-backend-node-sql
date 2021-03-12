@@ -190,7 +190,7 @@ exports.getParticipants = (req, res) => {
     } else {
       const participants = JSON.parse(body);
 
-      const user1 = participants.participants[0];
+      const user1 = participants.participants[1];
 
       const getUserUrl = `https://api.zoom.us/v2/users/${user1.user_email}`;
 
