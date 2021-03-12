@@ -199,15 +199,15 @@ exports.getParticipants = (req, res) => {
           'Authorization': 'Bearer ' + zoomAccessToken,
           'Content-Type': 'application/json'
         },
-        method: 'GET',
-        getUserUrl
-      }, function(er, resp, body1) {
+        uri: getUserUrl,
+        method: 'GET'
+      }, function (er, response, body1) {
         if (er) {
-          return res.status(500).send({error: true, errorObj: er, er: 'getting user error', body: body1});
+          res.status(500).send({ error: true, errorObj: er, er: 'error getting user' })
         } else {
-          res.status(200).send({error: false, user: JSON.parse(body1)});
+          res.status(200).send({ zoomUser: JSON.parse(body), error: false });
         }
-      })
+      });
       // res.status(200).send({ error: false, participants: JSON.parse(body) })
     }
   })
