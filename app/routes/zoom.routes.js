@@ -49,4 +49,10 @@ module.exports = function(app) {
     authJwt.verifyToken,
     controller.getParticipants
   );
+
+  app.post(
+    "/api/zoom/get_recording_total_count",
+    authJwt.verifyToken,
+    controller.getRecordingTotalCount
+  )
 };

@@ -186,29 +186,35 @@ exports.getParticipants = (req, res) => {
   }, function (err, respoonse, body) {
     if (err) {
       console.log(err)
-      return res.status(500).send({ error: true, errorObj: err, e: 'getting participant err' });
+      return res.status(500).send({ error: true, errorObj: err });
     } else {
-      const participants = JSON.parse(body);
+      res.status(200).send({ error: false, participants: JSON.parse(body) })
+    }
+  })
+}
 
-      const user1 = participants.participants[1];
+exports.getRecordingTotalCount = (req, res) => {
+  const zoomAccessToken = req.body.zoomAccessToken;
+  const created_at = req.body.created_at;
+  
+  const fromDay = new Date(created_at)
+  const from = fromDay.toISOString().split('T')[0];
+  const url = `https://api.zoom.us/v2/users/me/recordings?from=${from}`;
 
-      const getUserUrl = `https://api.zoom.us/v2/users/${user1.user_email}`;
+  request({
+    headers: {
+      'Authorization': 'Bearer ' + zoomAccessToken,
+      'Content-Type': 'application/json'
+    },
+    method: 'GET',
+    url
+  }, function (err, respoonse, body) {
+    if (err) {
+      return res.status(500).send({ error: true, errorObj: err });
+    } else {
+      const recordings = JSON.parse(body);
 
-      request({
-        headers: {
-          'Authorization': 'Bearer ' + zoomAccessToken,
-          'Content-Type': 'application/json'
-        },
-        uri: getUserUrl,
-        method: 'GET'
-      }, function (er, response, body1) {
-        if (er) {
-          res.status(500).send({ error: true, errorObj: er, er: 'error getting user' })
-        } else {
-          res.status(200).send({ zoomUser: JSON.parse(body1), error: false });
-        }
-      });
-      // res.status(200).send({ error: false, participants: JSON.parse(body) })
+      res.status(200).send({ error: false, recordings: JSON.parse(body) })
     }
   })
 }
