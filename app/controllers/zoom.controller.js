@@ -192,7 +192,7 @@ exports.getParticipants = (req, res) => {
 
       const user1 = participants.participants[0];
 
-      const getUserUrl = `https://api.zoom.us/v2/users/me`;
+      const getUserUrl = `https://api.zoom.us/v2/users/${user1.user_email}`;
 
       request({
         headers: {
