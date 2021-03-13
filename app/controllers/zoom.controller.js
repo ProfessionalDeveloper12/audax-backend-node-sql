@@ -201,7 +201,7 @@ exports.getRecordingTotalCount = (req, res) => {
   const from = fromDay.toISOString().split('T')[0];
   const url = `https://api.zoom.us/v2/users/me/recordings?from=${from}`;
 
-  res.send({created_at})
+  res.send({created_at, from})
 
   // request({
   //   headers: {
