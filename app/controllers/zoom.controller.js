@@ -201,22 +201,24 @@ exports.getRecordingTotalCount = (req, res) => {
   const from = fromDay.toISOString().split('T')[0];
   const url = `https://api.zoom.us/v2/users/me/recordings?from=${from}`;
 
-  request({
-    headers: {
-      'Authorization': 'Bearer ' + zoomAccessToken,
-      'Content-Type': 'application/json'
-    },
-    method: 'GET',
-    url
-  }, function (err, respoonse, body) {
-    if (err) {
-      return res.status(500).send({ error: true, errorObj: err });
-    } else {
-      const recordings = JSON.parse(body);
+  res.send({created_at})
 
-      res.status(200).send({ error: false, recordings: JSON.parse(body) })
-    }
-  })
+  // request({
+  //   headers: {
+  //     'Authorization': 'Bearer ' + zoomAccessToken,
+  //     'Content-Type': 'application/json'
+  //   },
+  //   method: 'GET',
+  //   url
+  // }, function (err, respoonse, body) {
+  //   if (err) {
+  //     return res.status(500).send({ error: true, errorObj: err });
+  //   } else {
+  //     const recordings = JSON.parse(body);
+
+  //     res.status(200).send({ error: false, recordings: JSON.parse(body) })
+  //   }
+  // })
 }
 
 exports.uploadMeeting = async (req, res) => {
